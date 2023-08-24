@@ -1,0 +1,43 @@
+openapi: 3.0.1
+info:
+  title: Simple API
+  version: v1
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+    variables:
+        port:
+            default: 8080
+            description: Port number
+paths:
+  /hello:
+    post:
+      requestBody:
+        description: Request payload
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GreetingRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingResponse'
+components:
+  schemas:
+    GreetingRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the person to greet
+    GreetingResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Greeting message

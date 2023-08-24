@@ -1,0 +1,77 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.2'
+    id 'io.spring.dependency-management' version '1.1.2'
+    // 추가
+    id "org.openapi.generator" version "6.6.0"
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 추가
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation('org.openapitools:openapi-generator:6.6.0') {
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// 추가
+openApiGenerate {
+    generatorName.set("spring")
+    verbose.set(true)
+    inputSpec.set("$rootDir/src/main/resources/static/simple-api.yaml")
+    outputDir.set("$buildDir/generate-resources")
+    apiPackage.set("com.example.openapigen.api")
+    invokerPackage.set("com.example.openapigen.invoker")
+    modelPackage.set("com.example.openapigen.model")
+    configOptions.set([
+            dateLibrary        : "java8",
+            library            : "spring-boot", //spring-boot, spring-mvc, spring-cloud
+            interfaceOnly      : "true",
+            unhandledException : "true",
+            useSpringBoot3     : "true",
+            useSpringController: "true",
+            skipDefaultInterface : "true"
+    ])
+}
+
+// 추가
+compileJava.dependsOn tasks.named("openApiGenerate")
+
+// 추가
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', 'build/generate-resources/src/main/java']
+        }
+    }
+}
