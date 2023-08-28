@@ -1,0 +1,48 @@
+openapi: 3.0.0
+info:
+  title: Feign Client API
+  version: 1.0.0
+  description: An API specification for a Feign Client
+paths:
+  /sample-endpoint:
+    post:
+      summary: Sample endpoint for Feign Client
+      requestBody:
+        description: Sample request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SampleRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SampleResponse'
+
+components:
+  schemas:
+    SampleRequest:
+      type: object
+      properties:
+        field1:
+          type: string
+          description: A sample string field
+        field2:
+          type: integer
+          description: A sample integer field
+      required:
+        - field1
+        - field2
+
+    SampleResponse:
+      type: object
+      properties:
+        resultField1:
+          type: string
+          description: A sample result string field
+        resultField2:
+          type: integer
+          description: A sample result integer field
